@@ -90,3 +90,16 @@ module "argocd" {
     kubernetes = kubernetes.eks
   }
 }
+
+#추가 
+resource "aws_eks_access_policy_association" "admin" {
+  depends_on    = [module.eks]
+  cluster_name  = module.eks.cluster_name
+  principal_arn = module.iam.bastion_admin_role_arn  
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+
+  access_scope {
+    type = "cluster"
+  }
+}
+
