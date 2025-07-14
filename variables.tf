@@ -23,3 +23,9 @@ variable "db_password" {
   type        = string
   sensitive   = true
 }
+
+# 추가
+variable "admin_user_arn" {
+  description = "IAM Role ARN for bastion access (EKS admin)"
+  type        = string
+}

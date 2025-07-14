@@ -33,3 +33,13 @@ variable "bastion_iam_role_name" {
   description = "Name of IAM Role to attach to the Bastion instance"
   type        = string
 }
+
+variable "rds_host" {
+  type    = string
+}
+variable "rds_user" {
+  type    = string
+}
+variable "rds_password" {
+  type    = string
+}

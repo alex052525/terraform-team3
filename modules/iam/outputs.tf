@@ -15,3 +15,8 @@ output "bastion_admin_role_name" {
   description = "IAM Role name for Bastion EC2 instance"
   value       = aws_iam_role.bastion_admin_role.name
 }
+
+output "bastion_admin_role_arn" {
+  description = "IAM Role ARN for Bastion EC2 instance"
+  value       = aws_iam_role.bastion_admin_role.arn
+}
