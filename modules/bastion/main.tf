@@ -9,6 +9,7 @@ resource "aws_instance" "bastion" {
   iam_instance_profile        = aws_iam_instance_profile.bastion.name  
 
   user_data = templatefile("${path.module}/user-data.sh.tpl", {
+  cluster_name = var.cluster_name
   rds_host      = var.rds_host
   rds_user      = var.rds_user
   rds_password  = var.rds_password
