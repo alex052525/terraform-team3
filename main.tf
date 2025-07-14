@@ -55,7 +55,8 @@ module "rds" {
   project_name           = "team3"
   vpc_id                = module.vpc.vpc_id
   private_subnet_ids    = module.vpc.private_subnet_ids
-  allowed_security_groups = [module.eks.cluster_security_group_id]
+  allowed_security_groups = [module.eks.cluster_security_group_id,
+                            module.vpc.bastion_sg_id]
   
   database_name = var.database_name
   username      = var.db_username

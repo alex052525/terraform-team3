@@ -49,5 +49,12 @@ newgrp docker
 # SSH 키 생성
 ssh-keygen -t rsa -N "" -f /root/.ssh/id_rsa
 
+# redis 설치
+sudo apt update
+sudo apt install redis-tools -y
+
+# mysql 설치
+sudo apt install -y mysql-client-core-8.0
+
 echo "cloud-init complete."
 
