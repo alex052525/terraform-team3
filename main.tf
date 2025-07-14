@@ -84,3 +84,33 @@ module "argocd" {
     kubernetes = kubernetes.eks
   }
 }
+
+module "alb" {
+  source             = "./modules/alb"
+  name               = "argocd-alb"
+  vpc_id             = module.vpc.vpc_id
+  public_subnet_ids  = module.vpc.public_subnet_ids
+  alb_security_group_ids = [module.vpc.alb_sg_id]
+
+}
+
+# ALB Ingress Controller (Helm 설치)
+module "alb_ingress_controller" {
+  source = "./modules/alb_ingress_controller"
+
+  # kubeconfig_path = "~/.kube/config"
+  cluster_name     = module.eks.cluster_name
+  # aws_region       = "ap-northeast-2"
+  vpc_id           = module.vpc.vpc_id
+  # providers = {
+  #   helm = helm.eks
+  # }
+}
+
+module "ingress" {
+  source          = "./modules/ingress"
+  kubeconfig_path = "~/.kube/config"
+  namespace       = "argocd"
+
+}
+
