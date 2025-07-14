@@ -15,7 +15,7 @@ timedatectl set-timezone Asia/Seoul
 
 # 필수 패키지
 apt update -y
-apt install -y tree jq git htop unzip vim docker.io
+apt install -y tree jq git htop unzip vim docker.io mysql-client-core-8.0
 
 # aws cli
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
