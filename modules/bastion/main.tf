@@ -6,9 +6,13 @@ resource "aws_instance" "bastion" {
   associate_public_ip_address = true
   key_name                    = var.key_name
   private_ip                  = var.private_ip
-  iam_instance_profile        = aws_iam_instance_profile.bastion.name  # ✅ 여기에 추가
+  iam_instance_profile        = aws_iam_instance_profile.bastion.name  
 
-  user_data = file("${path.module}/user-data.sh")
+  user_data = templatefile("${path.module}/user-data.sh.tpl", {
+  rds_host      = var.rds_host
+  rds_user      = var.rds_user
+  rds_password  = var.rds_password
+})
 
   tags = {
     Name = "${var.cluster_name}-bastion"

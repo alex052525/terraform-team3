@@ -21,6 +21,7 @@ apt install -y redis-tools
 
 
 
+
 # aws cli
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 unzip awscliv2.zip
@@ -78,3 +79,35 @@ EOF
 ## yaml 적용
 kubectl apply -f /root/aws-auth.yaml
 
+RDS_HOST="${rds_host}"
+RDS_USER="${rds_user}"
+RDS_PASSWORD="${rds_password}"
+
+# SQL 파일 작성
+cat <<EOF > /home/ubuntu/db-init.sql
+CREATE DATABASE IF NOT EXISTS fastpick;
+USE fastpick;
+
+CREATE TABLE IF NOT EXISTS product (
+    pidx INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) UNIQUE,
+    image_url VARCHAR(255) NOT NULL,
+    open BOOLEAN DEFAULT TRUE
+);
+
+CREATE TABLE IF NOT EXISTS \user\ (
+    uidx INT AUTO_INCREMENT PRIMARY KEY,
+    id VARCHAR(255) UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    name VARCHAR(255) UNIQUE
+);
+
+INSERT INTO product (name, image_url, open)
+VALUES 
+('Heart Denim Shirt', 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?q=80&w=776&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', TRUE),
+('Emerald Green Sneakers', 'https://images.unsplash.com/photo-1512990414788-d97cb4a25db3?q=80&w=1630&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', FALSE),
+('Black Skyline Sunglasses', 'https://cdn.pixabay.com/photo/2017/08/06/12/33/aviator-sunglasses-2592111_1280.jpg', FALSE),
+('Dark Walker Shoes', 'https://cdn.pixabay.com/photo/2016/12/10/16/57/shoes-1897708_1280.jpg', FALSE);
+EOF
+
+mysql -h "$RDS_HOST" -P 3306 -u "$RDS_USER" -p"$RDS_PASSWORD" < /home/ubuntu/db-init.sql

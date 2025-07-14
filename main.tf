@@ -39,6 +39,9 @@ module "bastion" {
   cluster_name      = module.eks.cluster_name
   private_ip        = "192.168.1.100"
   bastion_iam_role_name = module.iam.bastion_admin_role_name
+  rds_host     = module.rds.rds_endpoint         # RDS 모듈에서 나온 엔드포인트
+  rds_user     = var.db_username                 # tfvars에서 정의된 사용자명
+  rds_password = var.db_password                 # tfvars에서 정의된 비밀번호
 
   depends_on = [module.eks]
 }
@@ -55,7 +58,10 @@ module "rds" {
   project_name           = "team3"
   vpc_id                = module.vpc.vpc_id
   private_subnet_ids    = module.vpc.private_subnet_ids
-  allowed_security_groups = [module.eks.cluster_security_group_id]
+  allowed_security_groups = [
+    module.eks.cluster_security_group_id,
+    module.vpc.bastion_sg_id
+  ]
   
   database_name = var.database_name
   username      = var.db_username
