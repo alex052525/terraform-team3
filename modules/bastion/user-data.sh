@@ -49,35 +49,5 @@ newgrp docker
 # SSH 키 생성
 ssh-keygen -t rsa -N "" -f /root/.ssh/id_rsa
 
-# AWS 계정 ID 가져오기
-ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
-
-# aws-auth.yaml 생성
-cat <<EOF > /root/aws-auth.yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: aws-auth
-  namespace: kube-system
-data:
-  mapRoles: |
-    - rolearn: arn:aws:iam::${ACCOUNT_ID}:role/fastpick-eks-nodegroup-role
-      username: system:node:{{EC2PrivateDNSName}}
-      groups:
-        - system:bootstrappers
-        - system:nodes
-    - rolearn: arn:aws:iam::${ACCOUNT_ID}:role/team3-fastpick-bastion-role
-      username: bastion
-      groups:
-        - system:masters
-EOF
-
-# EKS 클러스터 연결 대기 (클러스터가 완전히 준비될 때까지)
-echo "Waiting for EKS cluster to be ready..."
-sleep 60
-
-# aws-auth.yaml 적용
-kubectl apply -f /root/aws-auth.yaml
-
 echo "cloud-init complete."
 
