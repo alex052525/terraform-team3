@@ -16,6 +16,11 @@ timedatectl set-timezone Asia/Seoul
 # 필수 패키지
 apt update -y
 apt install -y tree jq git htop unzip vim docker.io
+apt install -y mysql-client-core-8.0
+apt install -y redis-tools
+
+
+
 
 # aws cli
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
@@ -51,3 +56,25 @@ ssh-keygen -t rsa -N "" -f /root/.ssh/id_rsa
 
 echo "cloud-init complete."
 
+# aws-auth.yaml 생성
+cat <<EOF > /root/aws-auth.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: aws-auth
+  namespace: kube-system
+data:
+  mapRoles: |
+    - rolearn: arn:aws:iam::727646470302:role/fastpick-eks-nodegroup-role
+      username: system:node:{{EC2PrivateDNSName}}
+      groups:
+        - system:bootstrappers
+        - system:nodes
+    - rolearn: arn:aws:iam::727646470302:role/team3-fastpick-bastion-role
+      username: bastion
+      groups:
+        - system:masters
+EOF
+
+## yaml 적용
+kubectl apply -f /root/aws-auth.yaml
