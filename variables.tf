@@ -23,3 +23,10 @@ variable "db_password" {
   type        = string
   sensitive   = true
 }
+
+variable "grafana_admin_password" {
+  description = "Grafana admin password"
+  type        = string
+  default     = "admin123!"
+  sensitive   = true
+}
